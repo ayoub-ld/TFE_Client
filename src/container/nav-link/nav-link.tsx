@@ -13,7 +13,7 @@ type LinkData = {
 
 const links: LinkData[] = [
   { name: "Accueil", route: "/", Icon: HomeIcon },
-  { name: "Tendances", route: "/tendances", Icon: FireIcon },
+  { name: "Tendances", route: "/tendance", Icon: FireIcon },
   { name: "Recherche", route: "/recherche", Icon: MagnifyingGlassIcon },
 ];
 
