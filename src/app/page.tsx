@@ -1,9 +1,10 @@
 import Image from "next/image";
+import LoginPage from "./login/page";
 
 export default function Home() {
   return (
     <>
-      <h1>Sign Up to start communicating with the World !</h1>
+      <LoginPage />
     </>
   );
 }
