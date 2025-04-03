@@ -23,7 +23,7 @@ function NavLinkItem({ name, route, Icon }: NavLinkItemProps) {
   return (
     <li className="flex flex-row h-[66%] items-center justify-center">
       <Link href={route} aria-label={name}>
-        <Icon className="h-20 w-20" />
+        <Icon className="h-18 w-20 text-white" />
       </Link>
     </li>
   );

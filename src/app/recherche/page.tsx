@@ -5,7 +5,7 @@ export default function Recherche() {
       <form action="" className="mt-4">
         <label htmlFor="search-input"></label>
         <input
-          type="text"
+          type="search"
           id="search-input"
           name="search-input"
           title="Research input"
