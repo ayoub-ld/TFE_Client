@@ -15,8 +15,13 @@ export default function SearchBar({
       const response = await axios.get(`${API_URL}/search?q=${value}`);
       setResults(response.data);
     } catch (error) {
-      console.error("Error fetching data:", error);
-      setResults([]);
+      if (axios.isAxiosError(error) && error.request?.status === 404) {
+        console.error("API endpoint not found: ", error.config?.url);
+        setResults(["No results found"]);
+      } else {
+        console.error("Error fetching data:", error);
+        setResults(["Error loading search results"]);
+      }
     }
   }
 
