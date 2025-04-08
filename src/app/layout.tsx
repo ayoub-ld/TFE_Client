@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Roboto_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Roboto_Mono, Inconsolata } from "next/font/google";
 import "./globals.css";
 import Header from "@/container/header/header";
 import Footer from "@/container/footer/footer";
@@ -16,6 +16,10 @@ const robotoMono = Roboto_Mono({
   variable: "--font-roboto-mono",
   subsets: ["latin"],
 });
+const inconsolata = Inconsolata({
+  variable: "--font-inconsolata",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Fil: the next-gen social media platform",
@@ -30,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${robotoMono.variable} min-h-screen flex flex-col antialiased`}
+        className={`${robotoMono.variable} ${inconsolata.variable} font-mono min-h-screen flex flex-col antialiased`}
       >
         <Header />
         <main className="flex-1 flex flex-col items-center text-2xl bg-gray-700 text-white placeholder:bg-white">
