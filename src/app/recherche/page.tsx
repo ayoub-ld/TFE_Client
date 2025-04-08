@@ -1,24 +1,17 @@
+"use client";
+
+import SearchBar from "@/components/search-bar/search-bar";
+import SearchResultList from "@/components/search-result-list/search-result-list";
+import { useState } from "react";
+
 export default function Recherche() {
+  const [results, setResults] = useState<string[]>([]);
+
   return (
-    <>
-      <h1>Recherche</h1>
-      <form action="" className="mt-4">
-        <label htmlFor="search-input"></label>
-        <input
-          type="search"
-          id="search-input"
-          name="search-input"
-          title="Research input"
-          placeholder="Find a post"
-          className="border-white-100 border-1 p-1.5 rounded-md mx-2.5"
-        />
-        <button
-          type="submit"
-          className="border-1 hover:bg-violet-600 active:bg-violet-700 p-1.5 rounded-md mx-2.5"
-        >
-          Rechercher
-        </button>
-      </form>
-    </>
+    <div className="p-4">
+      <h1 className="text-2xl mb-4">Recherche</h1>
+      <SearchBar setResults={setResults} />
+      <SearchResultList results={results} />
+    </div>
   );
 }

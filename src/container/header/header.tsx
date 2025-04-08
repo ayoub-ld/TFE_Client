@@ -3,7 +3,7 @@ import NavLink from "../nav-link/nav-link";
 
 export default function Header() {
   return (
-    <header className="flex flex-row h-30 p-2.5 border-b-1 bg-gray-900">
+    <header className="flex flex-row box-border h-30 p-2.5 border-b-2 border-black bg-gray-900">
       <Image
         className="object-cover w-auto"
         src="/logo.png"
