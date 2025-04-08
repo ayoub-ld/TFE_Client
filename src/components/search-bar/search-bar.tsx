@@ -31,7 +31,7 @@ export default function SearchBar({
   };
 
   return (
-    <form onSubmit={handleSearch} className="mt-4">
+    <form onSubmit={handleSearch} className="my-5">
       <label htmlFor="search-input"></label>
       <input
         type="search"
