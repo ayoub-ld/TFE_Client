@@ -1,14 +1,6 @@
 import Post from "../post/page";
+import type { PostData } from "@/@types/post";
 
-export default function SearchResult({
-  post
-}: {
-  post: {
-    id: string;
-    content: string;
-    author: string;
-    profilePicture: string;
-  }
-}) {
-  return <Post postData={post} />;
+export default function SearchResult({ post }: { post: PostData }) {
+  return <Post {...post} />;
 }

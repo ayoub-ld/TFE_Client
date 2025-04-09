@@ -6,17 +6,9 @@ import {
   ChatBubbleLeftIcon,
 } from "@heroicons/react/24/outline";
 import { useState } from "react";
-import styles from './Post.module.css'
+import type { PostData } from "@/@types/post";
 
-export default function Post({
-  postData
-}: {
-  postData: {
-    content: string;
-    author: string;
-    profilePicture: string;
-  }
-}) {
+export default function Post(props: PostData) {
   const handleComment = () => {
     console.log("Comment icon clicked");
   };
@@ -34,13 +26,13 @@ export default function Post({
           <div className="...">
             <div className="flex items-center gap-2 mb-2">
               <img
-                src={postData.profilePicture}
+                src={props?.profilePicture}
                 alt="Profile"
                 className="w-8 h-8 rounded-full"
               />
-              <span className="font-medium">{postData.author}</span>
+              <span className="font-medium">{props?.author}</span>
             </div>
-            <p>{postData.content}</p>
+            <p>{props?.content}</p>
           </div>
         </section>
         <section className="flex flex-row mx-5 h-18 w-36 gap-5">

@@ -1,18 +1,12 @@
 "use client";
+import { SearchResult } from "@/@types/result";
 import axios from "axios";
 import { useState } from "react";
 
 export default function SearchBar({
   setResults,
 }: {
-  setResults: (
-    results: Array<{
-      id: any;
-      content: any;
-      author: any;
-      profilePicture: any;
-    }>
-  ) => void;
+  setResults: (results: Array<SearchResult>) => void;
 }) {
   const [input, setInput] = useState("");
   const API_URL =
