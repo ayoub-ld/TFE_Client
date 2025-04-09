@@ -10,6 +10,7 @@ export default function Header() {
         alt="website logo"
         width={120}
         height={80}
+        priority={true} // Add priority property for LCP optimization
       />
       <NavLink />
     </header>

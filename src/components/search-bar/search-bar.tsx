@@ -5,7 +5,14 @@ import { useState } from "react";
 export default function SearchBar({
   setResults,
 }: {
-  setResults: (results: string[]) => void;
+  setResults: (
+    results: Array<{
+      id: any;
+      content: any;
+      author: any;
+      profilePicture: any;
+    }>
+  ) => void;
 }) {
   const [input, setInput] = useState("");
   const API_URL =
@@ -13,15 +20,33 @@ export default function SearchBar({
 
   async function fetchData(value: string): Promise<void> {
     try {
-      const response = await axios.get(`${API_URL}/search?q=${value}`);
-      setResults(response.data);
+      const response = await axios.get(`${API_URL}/post/search?q=${value}`);
+      // Ensure we get proper post objects
+      const results = response.data?.data || [];
+
+      // Map to Post component expected format
+      const posts = (Array.isArray(results) ? results : [results]).map(
+        (post) => ({
+          id: post.id,
+          content: post.content,
+          author: post.author?.username || "Unknown",
+          profilePicture: post.author?.profilePicture || "/default-avatar.jpg",
+        })
+      );
+
+      setResults(posts);
+      console.log("Search results =>:", posts);
     } catch (error) {
-      if (axios.isAxiosError(error) && error.request?.status === 404) {
-        console.error("API endpoint not found: ", error.config?.url);
-        setResults(["No results found"]);
-      } else {
-        console.error("Error fetching data:", error);
-        setResults(["Error loading search results"]);
+      if (axios.isAxiosError(error)) {
+        console.error("API Error:", error.response?.data);
+        setResults([
+          {
+            id: "error",
+            content: "Error loading results",
+            author: "System",
+            profilePicture: "/error-icon.png",
+          },
+        ]);
       }
     }
   }

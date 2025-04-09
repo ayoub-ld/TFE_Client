@@ -5,8 +5,18 @@ import {
   PresentationChartLineIcon,
   ChatBubbleLeftIcon,
 } from "@heroicons/react/24/outline";
+import { useState } from "react";
+import styles from './Post.module.css'
 
-export default function Post() {
+export default function Post({
+  postData
+}: {
+  postData: {
+    content: string;
+    author: string;
+    profilePicture: string;
+  }
+}) {
   const handleComment = () => {
     console.log("Comment icon clicked");
   };
@@ -21,7 +31,17 @@ export default function Post() {
     <>
       <div className="flex flex-col items-center justify-center min-h-85 w-200 py-2 bg-gray-800 border-2 border-gray-800 rounded-2xl text-white mb-1">
         <section className="flex flex-col items-start justify-start m-2 pl-45 w-full mb-50">
-          <p>Placeholder for a post</p>
+          <div className="...">
+            <div className="flex items-center gap-2 mb-2">
+              <img
+                src={postData.profilePicture}
+                alt="Profile"
+                className="w-8 h-8 rounded-full"
+              />
+              <span className="font-medium">{postData.author}</span>
+            </div>
+            <p>{postData.content}</p>
+          </div>
         </section>
         <section className="flex flex-row mx-5 h-18 w-36 gap-5">
           <ChatBubbleLeftIcon

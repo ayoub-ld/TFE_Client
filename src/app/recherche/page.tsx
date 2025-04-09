@@ -5,7 +5,12 @@ import SearchResultList from "@/components/search-result-list/search-result-list
 import { useState } from "react";
 
 export default function Recherche() {
-  const [results, setResults] = useState<string[]>([]);
+  const [results, setResults] = useState<Array<{
+    id: string;
+    content: string;
+    author: string;
+    profilePicture: string;
+  }>>([]);
 
   return (
     <div className="p-4">
