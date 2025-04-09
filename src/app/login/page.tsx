@@ -1,13 +1,13 @@
-import { LoginForm } from "@/components/login-form/login-form";
+import SignIn from "@/components/sign-in/sign-in";
 
 export default function LoginPage() {
   return (
-    <div className="bg-muted flex min-h-svh w-full flex-col items-center justify-center gap-6 p-6 md:p-10">
-      <div className="flex w-full max-w-sm flex-col gap-6">
-        <a href="#" className="flex items-center gap-2 self-center font-medium">
+    <div className=" flex pt-5 flex-col items-center justify-center gap-6 text-2xl bg-gray-700 text-white">
+      <div className="flex w-full max-w-md flex-col gap-6">
+        <h1 className="flex justify-baseline pb-50 font-medium text-3xl w-160">
           Login to start communicating with the World !
-        </a>
-        <LoginForm />
+        </h1>
+        <SignIn />
       </div>
     </div>
   );
