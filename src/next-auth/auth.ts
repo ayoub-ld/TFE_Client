@@ -8,4 +8,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientSecret: process.env.NEXT_PUBLIC_GOOGLE_SECRET as string,
     }),
   ],
+  // Redirect URI
+  pages: {
+    signIn: "/logged-out",
+  },
+  debug: process.env.NODE_ENV === "development",
 });
