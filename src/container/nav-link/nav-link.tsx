@@ -18,12 +18,11 @@ const links: LinkData[] = [
 ];
 
 type NavLinkItemProps = LinkData & {};
-//TODO centrer la navbar au millieu de la page et non pas au millieu du ul
 function NavLinkItem({ name, route, Icon }: NavLinkItemProps) {
   return (
     <li className="flex flex-row h-20 w-25 items-center justify-center box-border mr-14">
       <Link href={route} aria-label={name}>
-        <Icon className="h-14 w-18 text-white" />
+        <Icon className="h-14 w-12 text-white" />
       </Link>
     </li>
   );
