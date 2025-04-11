@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { auth } from "./next-auth/auth";
+import { log } from "console";
 
 export async function middleware(request: NextRequest) {
   const session = await auth();
+  console.log("SESSSSSSSSSSSSSSION", session);
+
   const isLoggedIn = !!session;
   const isAuthPage = request.nextUrl.pathname === "/logged-out";
   const isHomePage = request.nextUrl.pathname === "/";

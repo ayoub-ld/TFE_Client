@@ -21,10 +21,10 @@ export default function Post(props: PostData) {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center min-h-85 w-200 py-2 bg-gray-800 border-2 border-gray-800 rounded-2xl text-white mb-1">
-        <section className="flex flex-col items-start justify-start m-2 pl-45 w-full mb-50">
+      <div className="flex flex-col items-center justify-center min-h-85 w-180 py-2 bg-gray-800 border-2 border-gray-800 rounded-2xl text-white mb-4">
+        <section className="flex flex-col items-start justify-start m-2 pl-20 pt-5 w-full mb-50">
           <div className="...">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-5">
               <img
                 src={props?.profilePicture}
                 alt="Profile"
