@@ -9,4 +9,5 @@ export interface PostData {
   content: string;
   author: string;
   profilePicture: string;
+  createdAt?: string;
 }

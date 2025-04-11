@@ -8,7 +8,7 @@ import {
 import { useState } from "react";
 import type { PostData } from "@/@types/post";
 
-export default function Post(props: PostData) {
+export default function Post({ content, author, profilePicture }: PostData) {
   const handleComment = () => {
     console.log("Comment icon clicked");
   };
@@ -26,13 +26,13 @@ export default function Post(props: PostData) {
           <div className="...">
             <div className="flex items-center gap-2 mb-5">
               <img
-                src={props?.profilePicture}
+                src={profilePicture}
                 alt="Profile"
                 className="w-8 h-8 rounded-full"
               />
-              <span className="font-medium">{props?.author}</span>
+              <span className="font-medium">{author}</span>
             </div>
-            <p>{props?.content}</p>
+            <p>{content}</p>
           </div>
         </section>
         <section className="flex flex-row mx-5 h-18 w-36 gap-5">

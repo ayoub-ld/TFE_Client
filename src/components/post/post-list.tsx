@@ -15,20 +15,40 @@ export default function PostList() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(`${API_URL}/post?limit=15`);
-        const fetchedPosts = response.data?.data || [];
+        const response = await axios.get(`${API_URL}/post?limit=15`, {
+          timeout: 5000,
+        });
 
-        // Map API response to PostData format
+        // Add error boundary for empty responses
+        if (!response.data?.data) {
+          throw new Error("Received empty response from API");
+        }
+
+        const fetchedPosts = response.data.data;
+
         const formattedPosts = fetchedPosts.map((post: any) => ({
           content: post.content,
           author: post.author?.username || "Unknown",
-          profilePicture: post.author?.profilePicture || "/default-avatar.jpg",
+          // Match exact API field names
+          profilePicture: post.author?.profile_picture || "/default-avatar.jpg",
+          // Add missing fields if needed
+          createdAt: post.created_at,
         }));
 
         setPosts(formattedPosts);
       } catch (error) {
-        console.error("Error fetching posts:", error);
+        console.error("API Error Details:", {
+          message:
+            error instanceof Error
+              ? error.message
+              : "An unknown error occurred",
+          config: error instanceof axios.AxiosError ? error.config : undefined,
+          response:
+            error instanceof axios.AxiosError ? error.response : undefined,
+        });
+        setPosts([]);
       } finally {
+        // Add this block
         setLoading(false);
       }
     };
