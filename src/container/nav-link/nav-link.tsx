@@ -18,12 +18,11 @@ const links: LinkData[] = [
 ];
 
 type NavLinkItemProps = LinkData & {};
-
 function NavLinkItem({ name, route, Icon }: NavLinkItemProps) {
   return (
-    <li className="flex flex-row h-[66%] items-center justify-center">
+    <li className="flex flex-row h-20 w-25 items-center justify-center box-border mr-14">
       <Link href={route} aria-label={name}>
-        <Icon className="h-18 w-20 text-white" />
+        <Icon className="h-14 w-12 text-white" />
       </Link>
     </li>
   );
@@ -31,7 +30,7 @@ function NavLinkItem({ name, route, Icon }: NavLinkItemProps) {
 
 export default function NavLink() {
   return (
-    <ul className="flex flex-row items-center justify-center m-auto gap-18">
+    <ul className="flex flex-row items-center justify-center m-auto gap-18 box-border">
       {links.map((link) => (
         <NavLinkItem key={link.route} {...link} />
       ))}

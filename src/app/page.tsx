@@ -1,14 +1,22 @@
-import Post from "@/components/post/page";
+"use client";
+
+import PostList from "@/components/post/post-list";
+import CreatePost from "@/components/post/create-post";
+import { useState } from "react";
 
 export default function Home() {
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handlePostCreated = () => {
+    // Increment the refresh key to trigger a re-fetch in PostList
+    setRefreshKey(prev => prev + 1);
+  };
+
   return (
     <>
-      <div className="flex flex-col items-center justify-center w-220 min-h-screen py-2 bg-gray-600 border-2 border-gray-800 rounded-2xl">
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
+      <div className="flex flex-col items-center justify-center min-w-screen min-h-screen py-2">
+        <CreatePost onPostCreated={handlePostCreated} />
+        <PostList refreshTrigger={refreshKey} />
       </div>
     </>
   );
