@@ -11,3 +11,7 @@ export interface PostData {
   profilePicture: string;
   createdAt?: string;
 }
+
+export type CreatePostProps = {
+  onPostCreated?: () => void;
+};

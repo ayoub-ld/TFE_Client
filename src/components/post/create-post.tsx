@@ -3,8 +3,11 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
+import { CreatePostProps } from "@/@types/post";
 
-export default function CreatePost() {
+
+
+export default function CreatePost({ onPostCreated }: CreatePostProps) {
   const [content, setContent] = useState("");
   const { data: session } = useSession();
   const API_URL =
@@ -21,7 +24,12 @@ export default function CreatePost() {
       });
 
       setContent("");
-      // Optionally refresh posts here
+      
+      // Call the onPostCreated callback to trigger a refresh
+      if (onPostCreated) {
+        onPostCreated();
+      }
+      
     } catch (error) {
       console.error("Error creating post:", error);
     }
