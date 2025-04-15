@@ -3,7 +3,7 @@ import "next-auth";
 declare module "next-auth" {
   interface Session {
     user?: {
-      id: number;
+      id: string & { __brand: 'uuid' };
       name?: string;
       email?: string;
       image?: string;
@@ -13,7 +13,7 @@ declare module "next-auth" {
 
 export interface CustomSession {
   user?: {
-    id: number;
+    id: string & { __brand: 'uuid' };
     name?: string;
     email?: string;
     image?: string;

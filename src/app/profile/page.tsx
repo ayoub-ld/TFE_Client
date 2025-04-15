@@ -22,7 +22,7 @@ export default function ProfilePage() {
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1";
 
   // Memoize fetchUserData to prevent infinite re-renders
-  const fetchUserData = useCallback(async (userId: number) => {
+  const fetchUserData = useCallback(async (userId: string) => {
     setError(null);
     setIsLoading(true);
     try {

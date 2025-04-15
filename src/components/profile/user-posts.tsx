@@ -5,6 +5,7 @@ import axios from "axios";
 import Post from "@/components/post/page";
 import { nanoid } from "nanoid";
 import type { PostData } from "@/@types/post";
+import { useSession } from "next-auth/react";
 
 interface UserPostsProps {
   userId: string;
@@ -13,12 +14,19 @@ interface UserPostsProps {
 export default function UserPosts({ userId }: UserPostsProps) {
   const [posts, setPosts] = useState<PostData[]>([]);
   const [loading, setLoading] = useState(true);
+  const { data: session } = useSession();
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1";
 
   const fetchUserPosts = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_URL}/post/user/${userId}`);
+      // Include current user ID as query parameter if user is authenticated
+      const currentUserId = session?.user?.id;
+      const endpoint = currentUserId 
+        ? `${API_URL}/post/user/${userId}?currentUserId=${currentUserId}`
+        : `${API_URL}/post/user/${userId}`;
+        
+      const response = await axios.get(endpoint);
       
       if (!response.data?.data) {
         throw new Error("Received empty response from API");
@@ -26,10 +34,13 @@ export default function UserPosts({ userId }: UserPostsProps) {
 
       const fetchedPosts = response.data.data;
       const formattedPosts = fetchedPosts.map((post: any) => ({
+        id: post.id_post,
         content: post.content,
         author: post.author?.username || "Unknown",
         profilePicture: post.author?.profile_picture ? `${API_URL}/${post.author.profile_picture}` : "/default-avatar.jpg",
         createdAt: post.created_at,
+        likes: post.likes_count || 0,
+        isLiked: post.is_liked || false
       }));
 
       setPosts(formattedPosts);
@@ -45,7 +56,7 @@ export default function UserPosts({ userId }: UserPostsProps) {
     if (userId) {
       fetchUserPosts();
     }
-  }, [userId]);
+  }, [userId, session]); // Also refresh when session changes
 
   if (loading) {
     return <div className="loader py-5"></div>;
