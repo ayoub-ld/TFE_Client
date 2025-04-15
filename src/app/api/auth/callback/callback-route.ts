@@ -1,6 +1,5 @@
 import { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { cookies } from "next/headers";
 
 export async function GET(request: NextRequest) {
   const token = await getToken({ req: request });

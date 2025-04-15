@@ -29,9 +29,7 @@ export default function PostList({ refreshTrigger = 0 }) {
       const formattedPosts = fetchedPosts.map((post: any) => ({
         content: post.content,
         author: post.author?.username || "Unknown",
-        // Match exact API field names
         profilePicture: post.author?.profile_picture || "/default-avatar.jpg",
-        // Add missing fields if needed
         createdAt: post.created_at,
       }));
 
@@ -48,7 +46,6 @@ export default function PostList({ refreshTrigger = 0 }) {
       });
       setPosts([]);
     } finally {
-      // Add this block
       setLoading(false);
     }
   };

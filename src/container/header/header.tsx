@@ -2,6 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import NavLink from "../nav-link/nav-link";
 import SignOut from "@/components/sign-out/sign-out";
 
@@ -31,7 +32,7 @@ export default function Header() {
       {/* Simplified condition to check for authentication */}
       {status === "authenticated" && (
         <div className="flex items-center gap-4 text-white">
-          <div className="flex items-center gap-2">
+          <Link href="/profile" className="flex items-center gap-2 hover:text-blue-400 transition-colors mr-5 text-xl">
             {session.user?.image && (
               <img
                 src={session.user.image}
@@ -39,8 +40,8 @@ export default function Header() {
                 className="w-8 h-8 rounded-full"
               />
             )}
-            <span>{session.user?.name || "User"}</span>
-          </div>
+            <span>My profile</span>
+          </Link>
           <SignOut />
         </div>
       )}

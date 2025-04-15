@@ -29,7 +29,6 @@ export default function CreatePost({ onPostCreated }: CreatePostProps) {
       if (onPostCreated) {
         onPostCreated();
       }
-      
     } catch (error) {
       console.error("Error creating post:", error);
     }
