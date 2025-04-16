@@ -126,6 +126,17 @@ export default function ProfilePage() {
     if (imgError || !userData?.profile_picture) {
       return "/default-avatar.jpg";
     }
+    
+    // When profile picture is a complete URL (like from Google)
+    if (userData.profile_picture && (userData.profile_picture.startsWith('http://') || userData.profile_picture.startsWith('https://'))) {
+      return userData.profile_picture;
+    }
+    
+    // If the profile picture is a relative URL without a protocol
+    if (userData.profile_picture && !userData.profile_picture.startsWith('/')) {
+      return `/${userData.profile_picture}`;
+    }
+    
     return userData.profile_picture;
   };
 
@@ -175,6 +186,7 @@ export default function ProfilePage() {
             Debug info: Session status: {status}, User ID: {session?.user?.id || 'Not available'}
           </div>
           <button
+            type="button"
             onClick={() => {
               const userId = session?.user?.id;
               if (userId) fetchUserData(userId);
@@ -194,14 +206,6 @@ export default function ProfilePage() {
         {/* Profile information section */}
         <div className="md:col-span-1 bg-gray-800 p-6 rounded-lg">
           <div className="flex flex-col items-center">
-            {/* Debug info */}
-            {process.env.NODE_ENV === 'development' && (
-              <div className="bg-gray-900 p-2 mb-4 w-full text-xs">
-                <p className="text-green-500">User ID: {userData.id_user}</p>
-                <p className="text-green-500">Username: {userData.username}</p>
-              </div>
-            )}
-            
             {/* Add error handling for profile image */}
             <div className="w-32 h-32 rounded-full mb-4 overflow-hidden bg-gray-700 relative">
               <img 
@@ -220,7 +224,6 @@ export default function ProfilePage() {
             
             {/* Check if ProfileEditor is mounting */}
             <div className="w-full">
-              <h3 className="text-sm text-gray-400 mb-1">Profile Editor Component:</h3>
               <ProfileEditor 
                 userData={userData} 
                 onProfileUpdated={handleProfileUpdate} 
@@ -233,12 +236,7 @@ export default function ProfilePage() {
         <div className="md:col-span-2">
           <h2 className="text-xl font-semibold text-white mb-6">My Posts</h2>
           {session?.user?.id ? (
-            <>
-              <div className="mb-4 p-2 bg-gray-800 rounded">
-                <p className="text-sm text-gray-400">User Posts Component (ID: {session.user.id}):</p>
-              </div>
-              <UserPosts userId={session.user.id} />
-            </>
+            <UserPosts userId={session.user.id} />
           ) : (
             <p className="text-gray-400">User ID not available, cannot load posts</p>
           )}

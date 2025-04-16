@@ -26,12 +26,29 @@ export default function PostList({ refreshTrigger = 0 }) {
 
       const fetchedPosts = response.data.data;
 
-      const formattedPosts = fetchedPosts.map((post: any) => ({
-        content: post.content,
-        author: post.author?.username || "Unknown",
-        profilePicture: post.author?.profile_picture || "/default-avatar.jpg",
-        createdAt: post.created_at,
-      }));
+      const formattedPosts = fetchedPosts.map((post: any) => {
+        // Fix profile picture URL handling
+        let profilePic = post.author?.profile_picture || "/default-avatar.jpg";
+        
+        // Keep original URL for http/https URLs (like from Google)
+        if (profilePic && (profilePic.startsWith('http://') || profilePic.startsWith('https://'))) {
+          // No change needed for complete URLs
+        }
+        // Add leading slash for relative URLs without one
+        else if (profilePic && !profilePic.startsWith('/')) {
+          profilePic = `/${profilePic}`;
+        }
+        
+        return {
+          id: post.id_post, // Make sure id is included
+          content: post.content,
+          author: post.author?.username || "Unknown",
+          profilePicture: profilePic,
+          createdAt: post.created_at,
+          likes: post.likes_count || 0,
+          isLiked: post.is_liked || false
+        };
+      });
 
       setPosts(formattedPosts);
     } catch (error) {

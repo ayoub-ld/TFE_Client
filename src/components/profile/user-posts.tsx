@@ -12,7 +12,6 @@ interface UserPostsProps {
 }
 
 export default function UserPosts({ userId }: UserPostsProps) {
-  console.log("UserPosts component rendering with userId:", userId);
   
   const [posts, setPosts] = useState<PostData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,13 +21,11 @@ export default function UserPosts({ userId }: UserPostsProps) {
 
   const fetchUserPosts = useCallback(async () => {
     if (!userId) {
-      console.error("No userId provided to UserPosts component");
       setError("User ID is required to fetch posts");
       setLoading(false);
       return;
     }
     
-    console.log("fetchUserPosts called for userId:", userId);
     setLoading(true);
     setError(null);
     try {
@@ -38,7 +35,6 @@ export default function UserPosts({ userId }: UserPostsProps) {
       // Make sure there's no path duplication and handle URL properly
       const endpoint = `${API_URL}/post/user/${userId}${currentUserId ? `?currentUserId=${currentUserId}` : ''}`;
         
-      console.log("Fetching posts from:", endpoint);
       const response = await axios.get(endpoint);
       
       if (!response.data?.data) {
@@ -46,21 +42,33 @@ export default function UserPosts({ userId }: UserPostsProps) {
       }
 
       const fetchedPosts = response.data.data;
-      console.log("Posts fetched:", fetchedPosts);
       
-      const formattedPosts = fetchedPosts.map((post: any) => ({
-        id: post.id_post,
-        content: post.content,
-        author: post.author?.username || "Unknown",
-        profilePicture: post.author?.profile_picture || "/default-avatar.jpg",
-        createdAt: post.created_at,
-        likes: post.likes_count || 0,
-        isLiked: post.is_liked || false
-      }));
+      const formattedPosts = fetchedPosts.map((post: any) => {
+        // Fix profile picture URL handling
+        let profilePic = post.author?.profile_picture || "/default-avatar.jpg";
+        
+        // Keep original URL for http/https URLs (like from Google)
+        if (profilePic && (profilePic.startsWith('http://') || profilePic.startsWith('https://'))) {
+          // No change needed for complete URLs
+        }
+        // Add leading slash for relative URLs without one
+        else if (profilePic && !profilePic.startsWith('/')) {
+          profilePic = `/${profilePic}`;
+        }
+        
+        return {
+          id: post.id_post,
+          content: post.content,
+          author: post.author?.username || "Unknown",
+          profilePicture: profilePic,
+          createdAt: post.created_at,
+          likes: post.likes_count || 0,
+          isLiked: post.is_liked || false
+        };
+      });
 
       setPosts(formattedPosts);
     } catch (error) {
-      console.error("Error fetching user posts:", error);
       if (axios.isAxiosError(error)) {
         console.error("API Error details:", {
           status: error.response?.status,
@@ -75,20 +83,11 @@ export default function UserPosts({ userId }: UserPostsProps) {
   }, [API_URL, userId, session]);
 
   useEffect(() => {
-    console.log("UserPosts useEffect running with userId:", userId);
     fetchUserPosts();
   }, [fetchUserPosts]); // Only need to add fetchUserPosts since userId is included in its dependencies
 
-  console.log("UserPosts render state:", { loading, error, postsCount: posts.length });
-
-  // Simple UI to verify the component is rendering at all
   return (
-    <div className="border-2 border-gray-600 rounded-lg p-4">
-      <div className="mb-4 bg-gray-900 p-2 rounded">
-        <p className="text-sm text-yellow-500">User Posts Debug - ID: {userId}</p>
-        <p className="text-xs text-gray-400">Loading: {loading ? "Yes" : "No"}, Error: {error ? "Yes" : "No"}, Posts: {posts.length}</p>
-      </div>
-      
+    <div className="space-y-6">
       {loading && (
         <div className="loader py-5">
           <p className="text-gray-400">Loading posts...</p>
@@ -108,7 +107,7 @@ export default function UserPosts({ userId }: UserPostsProps) {
       )}
 
       {!loading && !error && (
-        <div className="space-y-6">
+        <div>
           {posts.length > 0 ? (
             posts.map((post) => <Post key={nanoid()} {...post} />)
           ) : (

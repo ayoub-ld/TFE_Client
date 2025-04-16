@@ -74,19 +74,8 @@ export default function ProfileEditor({ userData, onProfileUpdated }: ProfileEdi
     setProfilePicture(userData.profile_picture || "");
   }, [userData]);
 
-  // Add a wrapping div with a border to make component boundaries visible
   return (
-    <div className="border-2 border-gray-600 rounded-lg p-4 w-full">
-      <div className="mb-4 bg-gray-900 p-2 rounded">
-        <p className="text-sm text-yellow-500">Profile Editor Debug</p>
-        <p className="text-xs text-gray-400">
-          User ID: {userData.id_user}, 
-          Google ID: {userData.google_id || 'Not available'},
-          Editing: {isEditing ? "Yes" : "No"}, 
-          Loading: {isLoading ? "Yes" : "No"}
-        </p>
-      </div>
-      
+    <div className=" rounded-lg p-4 w-full">      
       {!isEditing ? (
         <button type="button"
           onClick={() => setIsEditing(true)}

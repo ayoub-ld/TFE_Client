@@ -36,30 +36,18 @@ export default function Post({ id, content, author, profilePicture, likes: initi
 
     setIsLoading(true);
     try {
-      const postId = String(id);
-      const userId = String(session.user.id);
+      // Since the /post/{postId}/like endpoint appears to be missing in the backend,
+      // we'll simulate the like functionality locally for now
+      console.log(`Like functionality currently only works on frontend - API endpoint missing`);
       
-      const endpoint = `${API_URL}/post/${postId}/like`;
-      const method = isLiked ? 'delete' : 'post';
-      
-      console.log(`Sending ${method} request to ${endpoint}`, { 
-        userId, 
-        userIdType: typeof userId,
-        postId,
-        postIdType: typeof postId
-      });
-      
-      const response = await axios({
-        method,
-        url: endpoint,
-        data: { userId }
-      });
-      
-      console.log('Like/unlike response:', response.data);
-
-      // Update local state
+      // Update local state only - this will be lost on page refresh until backend is updated
       setIsLiked(!isLiked);
       setLikes(prevLikes => isLiked ? Math.max(0, prevLikes - 1) : prevLikes + 1);
+      
+      // Log information about what would have happened
+      console.log(`${isLiked ? 'Unliked' : 'Liked'} post ${id} by user ${session.user.id}`);
+      console.log('Note: This is a temporary client-side solution. Backend API needs to implement the like endpoint.');
+      
     } catch (error) {
       console.error("Error toggling like:", error);
       if (axios.isAxiosError(error)) {
@@ -84,8 +72,13 @@ export default function Post({ id, content, author, profilePicture, likes: initi
       return "/default-avatar.jpg";
     }
 
+    // When profile picture is a complete URL (like from Google)
+    if (profilePicture && (profilePicture.startsWith('http://') || profilePicture.startsWith('https://'))) {
+      return profilePicture;
+    }
+
     // If the profile picture is a relative URL without a protocol
-    if (profilePicture && !profilePicture.startsWith('http') && !profilePicture.startsWith('/')) {
+    if (profilePicture && !profilePicture.startsWith('/')) {
       return `/${profilePicture}`;
     }
 
