@@ -32,11 +32,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (account && profile) {
         try {
           console.log("Processing JWT callback for email:", token.email);
-          console.log("API URL:", process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080");
+          // Get the base API URL without the /api/v1 suffix that's already in the env variable
+          const baseApiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1";
+          console.log("API URL:", baseApiUrl);
           
           // First check if user exists by email
           const checkResponse = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}/api/v1/user/email/${encodeURIComponent(
+            `${baseApiUrl}/user/email/${encodeURIComponent(
               token.email || ""
             )}`,
             {
@@ -67,7 +69,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             console.log("Creating user with data:", JSON.stringify(userData));
 
             const createResponse = await fetch(
-              `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}/api/v1/user`,
+              `${baseApiUrl}/user`,
               {
                 method: "POST",
                 headers: { 
@@ -98,7 +100,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             if (!existingUser.data.google_id) {
               console.log("Updating missing Google ID");
               await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}/api/v1/user/${existingUser.data.id_user}`,
+                `${baseApiUrl}/user/${existingUser.data.id_user}`,
                 {
                   method: "PUT",
                   headers: { 
@@ -121,7 +123,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       if (session.user) {
         // Get the database user ID from token
-        session.user.id = (token.user_id as string) || "";
+        session.user.id = token.user_id as string || "";
         console.log("Session user ID:", session.user.id); // Debug log
       }
       return session;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import Post from "@/components/post/page";
 import { nanoid } from "nanoid";
@@ -12,20 +12,33 @@ interface UserPostsProps {
 }
 
 export default function UserPosts({ userId }: UserPostsProps) {
+  console.log("UserPosts component rendering with userId:", userId);
+  
   const [posts, setPosts] = useState<PostData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { data: session } = useSession();
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1";
 
-  const fetchUserPosts = async () => {
+  const fetchUserPosts = useCallback(async () => {
+    if (!userId) {
+      console.error("No userId provided to UserPosts component");
+      setError("User ID is required to fetch posts");
+      setLoading(false);
+      return;
+    }
+    
+    console.log("fetchUserPosts called for userId:", userId);
     setLoading(true);
+    setError(null);
     try {
       // Include current user ID as query parameter if user is authenticated
       const currentUserId = session?.user?.id;
-      const endpoint = currentUserId 
-        ? `${API_URL}/post/user/${userId}?currentUserId=${currentUserId}`
-        : `${API_URL}/post/user/${userId}`;
+      
+      // Make sure there's no path duplication and handle URL properly
+      const endpoint = `${API_URL}/post/user/${userId}${currentUserId ? `?currentUserId=${currentUserId}` : ''}`;
         
+      console.log("Fetching posts from:", endpoint);
       const response = await axios.get(endpoint);
       
       if (!response.data?.data) {
@@ -33,11 +46,13 @@ export default function UserPosts({ userId }: UserPostsProps) {
       }
 
       const fetchedPosts = response.data.data;
+      console.log("Posts fetched:", fetchedPosts);
+      
       const formattedPosts = fetchedPosts.map((post: any) => ({
         id: post.id_post,
         content: post.content,
         author: post.author?.username || "Unknown",
-        profilePicture: post.author?.profile_picture ? `${API_URL}/${post.author.profile_picture}` : "/default-avatar.jpg",
+        profilePicture: post.author?.profile_picture || "/default-avatar.jpg",
         createdAt: post.created_at,
         likes: post.likes_count || 0,
         isLiked: post.is_liked || false
@@ -46,29 +61,61 @@ export default function UserPosts({ userId }: UserPostsProps) {
       setPosts(formattedPosts);
     } catch (error) {
       console.error("Error fetching user posts:", error);
+      if (axios.isAxiosError(error)) {
+        console.error("API Error details:", {
+          status: error.response?.status,
+          data: error.response?.data
+        });
+      }
+      setError("Failed to load posts. Please try again later.");
       setPosts([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, [API_URL, userId, session]);
 
   useEffect(() => {
-    if (userId) {
-      fetchUserPosts();
-    }
-  }, [userId, session]); // Also refresh when session changes
+    console.log("UserPosts useEffect running with userId:", userId);
+    fetchUserPosts();
+  }, [fetchUserPosts]); // Only need to add fetchUserPosts since userId is included in its dependencies
 
-  if (loading) {
-    return <div className="loader py-5"></div>;
-  }
+  console.log("UserPosts render state:", { loading, error, postsCount: posts.length });
 
+  // Simple UI to verify the component is rendering at all
   return (
-    <div className="space-y-6">
-      {posts.length > 0 ? (
-        posts.map((post) => <Post key={nanoid()} {...post} />)
-      ) : (
+    <div className="border-2 border-gray-600 rounded-lg p-4">
+      <div className="mb-4 bg-gray-900 p-2 rounded">
+        <p className="text-sm text-yellow-500">User Posts Debug - ID: {userId}</p>
+        <p className="text-xs text-gray-400">Loading: {loading ? "Yes" : "No"}, Error: {error ? "Yes" : "No"}, Posts: {posts.length}</p>
+      </div>
+      
+      {loading && (
+        <div className="loader py-5">
+          <p className="text-gray-400">Loading posts...</p>
+        </div>
+      )}
+      
+      {error && (
         <div className="text-center py-10 bg-gray-800 rounded-lg">
-          <p className="text-gray-400">No posts yet</p>
+          <p className="text-red-500">{error}</p>
+          <button 
+            onClick={() => fetchUserPosts()}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+          >
+            Try Again
+          </button>
+        </div>
+      )}
+
+      {!loading && !error && (
+        <div className="space-y-6">
+          {posts.length > 0 ? (
+            posts.map((post) => <Post key={nanoid()} {...post} />)
+          ) : (
+            <div className="text-center py-10 bg-gray-800 rounded-lg">
+              <p className="text-gray-400">No posts yet</p>
+            </div>
+          )}
         </div>
       )}
     </div>

@@ -5,8 +5,6 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import { CreatePostProps } from "@/@types/post";
 
-
-
 export default function CreatePost({ onPostCreated }: CreatePostProps) {
   const [content, setContent] = useState("");
   const { data: session } = useSession();
@@ -24,7 +22,7 @@ export default function CreatePost({ onPostCreated }: CreatePostProps) {
       });
 
       setContent("");
-      
+
       // Call the onPostCreated callback to trigger a refresh
       if (onPostCreated) {
         onPostCreated();

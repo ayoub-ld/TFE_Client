@@ -1,7 +1,7 @@
 "use client";
 
 import SearchBar from "@/components/search-bar/search-bar";
-import SearchResultList from "@/components/search-result-list/search-result-list";
+import SearchResultList from "@/components/search-result/search-result-list";
 import { useState } from "react";
 
 export default function Recherche() {
