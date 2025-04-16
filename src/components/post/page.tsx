@@ -36,17 +36,26 @@ export default function Post({ id, content, author, profilePicture, likes: initi
 
     setIsLoading(true);
     try {
-      // Since the /post/{postId}/like endpoint appears to be missing in the backend,
-      // we'll simulate the like functionality locally for now
-      console.log(`Like functionality currently only works on frontend - API endpoint missing`);
+      const postId = String(id);
+      const userId = String(session.user.id);
       
-      // Update local state only - this will be lost on page refresh until backend is updated
+      // Use our new like API endpoints
+      const endpoint = `${API_URL}/like/${postId}`;
+      const method = isLiked ? 'delete' : 'post';
+      
+      console.log(`Sending ${method} request to ${endpoint}`, { userId });
+      
+      const response = await axios({
+        method,
+        url: endpoint,
+        data: { userId }
+      });
+      
+      console.log('Like/unlike response:', response.data);
+
+      // Update local state with data from the API
       setIsLiked(!isLiked);
-      setLikes(prevLikes => isLiked ? Math.max(0, prevLikes - 1) : prevLikes + 1);
-      
-      // Log information about what would have happened
-      console.log(`${isLiked ? 'Unliked' : 'Liked'} post ${id} by user ${session.user.id}`);
-      console.log('Note: This is a temporary client-side solution. Backend API needs to implement the like endpoint.');
+      setLikes(response.data.likes_count || (isLiked ? Math.max(0, likes - 1) : likes + 1));
       
     } catch (error) {
       console.error("Error toggling like:", error);
@@ -115,12 +124,12 @@ export default function Post({ id, content, author, profilePicture, likes: initi
             {isLiked ? (
               <HeartSolid
                 onClick={isLoading ? undefined : handleFav}
-                className={`text-red-500 cursor-pointer ${isLoading ? 'opacity-50' : ''}`}
+                className={`w-9 h-9 text-red-500 cursor-pointer transition-all duration-200 ${isLoading ? 'opacity-50' : ''}`}
               />
             ) : (
               <HeartOutline
                 onClick={isLoading ? undefined : handleFav}
-                className={`w-10 hover:text-red-500 cursor-pointer ${isLoading ? 'opacity-50' : ''}`}
+                className={`w-9 h-9 hover:text-red-500 cursor-pointer transition-all duration-200 ${isLoading ? 'opacity-50' : ''}`}
               />
             )}
             <span className="text-sm">{likes}</span>
