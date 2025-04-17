@@ -3,6 +3,7 @@ import { nanoid } from "nanoid";
 
 export default function SearchResultList({
   results,
+  hasSearched = false,
 }: {
   results: Array<{
     id: string;
@@ -10,12 +11,15 @@ export default function SearchResultList({
     author: string;
     profilePicture: string;
   }>;
+  hasSearched?: boolean;
 }) {
   return (
     <div className="results-list w-full max-w-2xl">
-      {results.map((post) => (
-        <SearchResult key={nanoid()} post={post} />
-      ))}
+      {results.length > 0 ? (
+        results.map((post) => <SearchResult key={nanoid()} post={post} />)
+      ) : (
+        hasSearched && <p className="pt-3">No result found</p>
+      )}
     </div>
   );
 }
