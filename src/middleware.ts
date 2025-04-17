@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { auth } from "./next-auth/auth";
-import { log } from "console";
 
 export async function middleware(request: NextRequest) {
   const session = await auth();
@@ -12,12 +11,13 @@ export async function middleware(request: NextRequest) {
   const isHomePage = request.nextUrl.pathname === "/";
   const isTendancePage = request.nextUrl.pathname === "/tendance";
   const isRecherchePage = request.nextUrl.pathname === "/recherche";
+  const isProfilePage = request.nextUrl.pathname === "/profile";
 
   // If user is not logged in and trying to access protected routes
   if (
     !isLoggedIn &&
     !isAuthPage &&
-    (isHomePage || isTendancePage || isRecherchePage)
+    (isHomePage || isTendancePage || isRecherchePage || isProfilePage)
   ) {
     return NextResponse.redirect(new URL("/logged-out", request.url));
   }
@@ -32,5 +32,5 @@ export async function middleware(request: NextRequest) {
 
 //  "Matching Paths"
 export const config = {
-  matcher: ["/", "/logged-out", "/tendance", "/recherche"],
+  matcher: ["/", "/logged-out", "/tendance", "/recherche", "/profile"],
 };

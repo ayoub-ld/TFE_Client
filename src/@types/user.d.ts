@@ -7,4 +7,5 @@ export interface UserData {
   profile_picture?: string;
   created_at?: string;
   updated_at?: string;
+  google_id: string;
 }

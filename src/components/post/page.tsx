@@ -39,15 +39,11 @@ export default function Post({ id, content, author, profilePicture, likes: initi
       const postId = String(id);
       const userId = String(session.user.id);
       
-      const endpoint = `${API_URL}/post/${postId}/like`;
+      // Use our new like API endpoints
+      const endpoint = `${API_URL}/like/${postId}`;
       const method = isLiked ? 'delete' : 'post';
       
-      console.log(`Sending ${method} request to ${endpoint}`, { 
-        userId, 
-        userIdType: typeof userId,
-        postId,
-        postIdType: typeof postId
-      });
+      console.log(`Sending ${method} request to ${endpoint}`, { userId });
       
       const response = await axios({
         method,
@@ -57,9 +53,10 @@ export default function Post({ id, content, author, profilePicture, likes: initi
       
       console.log('Like/unlike response:', response.data);
 
-      // Update local state
+      // Update local state with data from the API
       setIsLiked(!isLiked);
-      setLikes(prevLikes => isLiked ? Math.max(0, prevLikes - 1) : prevLikes + 1);
+      setLikes(response.data.likes_count || (isLiked ? Math.max(0, likes - 1) : likes + 1));
+      
     } catch (error) {
       console.error("Error toggling like:", error);
       if (axios.isAxiosError(error)) {
@@ -84,8 +81,13 @@ export default function Post({ id, content, author, profilePicture, likes: initi
       return "/default-avatar.jpg";
     }
 
+    // When profile picture is a complete URL (like from Google)
+    if (profilePicture && (profilePicture.startsWith('http://') || profilePicture.startsWith('https://'))) {
+      return profilePicture;
+    }
+
     // If the profile picture is a relative URL without a protocol
-    if (profilePicture && !profilePicture.startsWith('http') && !profilePicture.startsWith('/')) {
+    if (profilePicture && !profilePicture.startsWith('/')) {
       return `/${profilePicture}`;
     }
 
@@ -122,12 +124,12 @@ export default function Post({ id, content, author, profilePicture, likes: initi
             {isLiked ? (
               <HeartSolid
                 onClick={isLoading ? undefined : handleFav}
-                className={`text-red-500 cursor-pointer ${isLoading ? 'opacity-50' : ''}`}
+                className={`w-9 h-9 text-red-500 cursor-pointer transition-all duration-200 ${isLoading ? 'opacity-50' : ''}`}
               />
             ) : (
               <HeartOutline
                 onClick={isLoading ? undefined : handleFav}
-                className={`w-10 hover:text-red-500 cursor-pointer ${isLoading ? 'opacity-50' : ''}`}
+                className={`w-9 h-9 hover:text-red-500 cursor-pointer transition-all duration-200 ${isLoading ? 'opacity-50' : ''}`}
               />
             )}
             <span className="text-sm">{likes}</span>
