@@ -65,9 +65,9 @@ export default function SearchBar({
       />
       <button
         type="submit"
-        className="border-1 hover:bg-violet-600 active:bg-violet-700 p-1.5 rounded-md mx-2.5"
+        className="border-1 hover:bg-gray-800 active:bg-violet-800 p-1.5 rounded-md mx-2.5"
       >
-        Rechercher
+        Search
       </button>
     </form>
   );
